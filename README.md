@@ -13,3 +13,6 @@ For more, [read the annotated source](docs/app.html).
 
 ## Ishmael
 For more on Ishmael, visit [https://github.com/bensyverson/Ishmael](https://github.com/bensyverson/Ishmael)
+
+## License
+This software uses the MIT license. For more information, see the [LICENSE](LICENSE)
