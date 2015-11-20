@@ -1,9 +1,12 @@
 // # Ishmael BasicApp example
 // Ishmael is an isomorphic web app framework, which means the same app code can be run on the server and the browser. This example "freezes" and serves a very simple app via Express/node.js. The browser will get the static HTML version along with a JavaScript shim to "thaw" the entire app and revive it in place. The browser doesn't even need to re-render the page.
 //
-// To run the demo:
+// To install dependencies:
 // 
 //     npm install
+//
+// To run the demo:
+//
 //     node app.js
 //
 // Then visit: http://localhost:1851/app/
@@ -74,3 +77,5 @@ app.get('/js/*', function(req, res){
 var server = app.listen(1851, function(){
 	console.log("Visit http://localhost:1851/app/");
 });
+
+// For more, see the documentation for [basicapp.js](basicapp.html), [storylistview.js](storylistview.html) and [storyview.js](storyview.html)
