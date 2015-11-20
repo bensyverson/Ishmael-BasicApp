@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Ishmael BasicApp example</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="ishmael-basicapp-example">Ishmael BasicApp example</h1>
+<p>Ishmael is an isomorphic web app framework, which means the same app code can be run on the server and the browser. This example “freezes” and serves a very simple app via Express/node.js. The browser will get the static HTML version along with a JavaScript shim to “thaw” the entire app and revive it in place. The browser doesn’t even need to re-render the page.</p>
+<p>To run the demo:</p>
+<pre><code>npm install
+node app.js
+</code></pre><p>Then visit: <a href="http://localhost:1851/app/">http://localhost:1851/app/</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-pi">
+'use strict'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="the-code">The code</h2>
+<p>Third party requirements:</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> app = express();
+<span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+<span class="hljs-keyword">var</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">var</span> PutStuffHere = <span class="hljs-built_in">require</span>(<span class="hljs-string">'putstuffhere'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>First party requirements:</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> BasicApp = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/basicapp.js'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Tell <strong>PutStuffHere</strong>, our template system, where to look for templates.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> (PutStuffHere.shared()) { 
+	PutStuffHere.shared().setTemplateRoot(__dirname + <span class="hljs-string">'/templates/'</span>);
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>For simplicity’s sake, we’ll only set up a single rout for the app, under <code>/app</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>app.get(<span class="hljs-string">'/app'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req,res)</span></span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Instantiate the app,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> appInstance = <span class="hljs-keyword">new</span> BasicApp();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>and load the main view.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	appInstance.rootViewController().loadView(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Here we have the opportunity to do more before alerting the view controller that it’s fully loaded. For now, we’ll just call <code>viewDidLoad</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		appInstance.rootViewController().viewDidLoad();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>At this point, the app and its views are loaded. We could simply send the HTML, but we’re going to use <code>packAndShipFromPath</code> to put the entire app state on ice.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		appInstance.packAndShipFromPath(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, html)</span></span>{
+			<span class="hljs-keyword">if</span> (err) {
+				res.status(<span class="hljs-number">500</span>).send(<span class="hljs-string">"Whoops!"</span>);
+				<span class="hljs-keyword">return</span>;
+			}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Now we have the HTML of the app, along with the reviver shim, but it still needs to be sent within an html and body tag, etc.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">var</span> data = fs.readFileSync(path.resolve(__dirname, <span class="hljs-string">'templates/wrapper.html'</span>));
+			<span class="hljs-keyword">var</span> template = data.toString(<span class="hljs-string">'utf8'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Our template contains the phrase “put html here”—we’ll replace that with our HTML.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			template = template.replace(<span class="hljs-regexp">/put html here/</span>, html);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Send the whole thing!</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			res.send(template);
+		});
+	});
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Handle requests to /js/ and route them to the proper static files</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>app.get(<span class="hljs-string">'/js/*'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res)</span></span>{
+	<span class="hljs-keyword">var</span> newPath = req.path;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Send anything under <code>/js/modules/</code> to our <code>node_modules</code> directory</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">if</span> (req.path.match(<span class="hljs-regexp">/\/modules/</span>)) {
+		newPath = req.path.replace(<span class="hljs-regexp">/\/js\/modules/</span>, <span class="hljs-string">'node_modules/'</span>);
+	} <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Otherwise, route <code>/js/</code> to <code>lib</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		newPath = req.path.replace(<span class="hljs-regexp">/\/js/</span>, <span class="hljs-string">'lib/'</span>);		
+	}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Send the static data</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> data = fs.readFileSync(path.resolve(__dirname, newPath));
+	res.send(data);
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Start the server</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> server = app.listen(<span class="hljs-number">1851</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+	<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Visit http://localhost:1851/app/"</span>);
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

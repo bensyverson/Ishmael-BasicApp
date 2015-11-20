@@ -1,0 +1,29 @@
+{
+  "name": "ishmael-basicapp",
+  "version": "0.5.0",
+  "description": "A \"Hello World\" for Ishmael, showing an app being rendered and frozen in Express, and revived in the browser.",
+  "main": "app.js",
+  "scripts": {
+    "test": "test app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bensyverson/Ishmael-BasicApp.git"
+  },
+  "keywords": [
+    "ishmael",
+    "isomorphic",
+    "express"
+  ],
+  "author": "Ben Syverson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bensyverson/Ishmael-BasicApp/issues"
+  },
+  "homepage": "https://github.com/bensyverson/Ishmael-BasicApp#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "ishmael": "^0.5.1",
+    "putstuffhere": "^0.9.3"
+  }
+}
