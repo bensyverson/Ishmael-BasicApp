@@ -99,7 +99,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>app.get(<span class="hljs-string">'/app'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req,res)</span></span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>app.get(<span class="hljs-string">'/app'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{</pre></div></div>
             
         </li>
         
@@ -129,7 +129,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	appInstance.rootViewController().loadView(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>	appInstance.rootViewController().loadView(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{</pre></div></div>
             
         </li>
         
@@ -159,7 +159,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		appInstance.packAndShipFromPath(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, html)</span></span>{
+            <div class="content"><div class='highlight'><pre>		appInstance.packAndShipFromPath(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, html</span>)</span>{
 			<span class="hljs-keyword">if</span> (err) {
 				res.status(<span class="hljs-number">500</span>).send(<span class="hljs-string">"Whoops!"</span>);
 				<span class="hljs-keyword">return</span>;
@@ -223,12 +223,13 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Handle requests to /js/ and route them to the proper static files</p>
+              <p>Route our static file requests to the proper places:</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>app.get(<span class="hljs-string">'/js/*'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res)</span></span>{
-	<span class="hljs-keyword">var</span> newPath = req.path;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>app.use(<span class="hljs-string">'/js/modules'</span>, express.static(<span class="hljs-string">'node_modules'</span>));
+app.use(<span class="hljs-string">'/js'</span>, express.static(<span class="hljs-string">'lib'</span>));
+app.use(<span class="hljs-string">'/'</span>, express.static(<span class="hljs-string">'templates'</span>));</pre></div></div>
             
         </li>
         
@@ -239,13 +240,13 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>Send anything under <code>/js/modules/</code> to our <code>node_modules</code> directory</p>
+              <p>Start the server</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">if</span> (req.path.match(<span class="hljs-regexp">/\/modules/</span>)) {
-		newPath = req.path.replace(<span class="hljs-regexp">/\/js\/modules/</span>, <span class="hljs-string">'node_modules/'</span>);
-	} <span class="hljs-keyword">else</span> {</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> server = app.listen(<span class="hljs-number">1851</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+	<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Visit http://localhost:1851/app/"</span>);
+});</pre></div></div>
             
         </li>
         
@@ -255,56 +256,6 @@
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
-              </div>
-              <p>Otherwise, route <code>/js/</code> to <code>lib</code></p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>		newPath = req.path.replace(<span class="hljs-regexp">/\/js/</span>, <span class="hljs-string">'lib/'</span>);		
-	}</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-16">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
-              </div>
-              <p>Send the static data</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> data = fs.readFileSync(path.resolve(__dirname, newPath));
-	res.send(data);
-});</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-17">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
-              </div>
-              <p>Start the server</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> server = app.listen(<span class="hljs-number">1851</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
-	<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Visit http://localhost:1851/app/"</span>);
-});</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-18">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>For more, see the documentation for <a href="basicapp.html">basicapp.js</a>, <a href="storylistview.html">storylistview.js</a> and <a href="storyview.html">storyview.js</a></p>
 

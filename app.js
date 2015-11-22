@@ -58,20 +58,10 @@ app.get('/app', function(req,res){
 	});
 });
 
-// Handle requests to /js/ and route them to the proper static files
-app.get('/js/*', function(req, res){
-	var newPath = req.path;
-	// Send anything under `/js/modules/` to our `node_modules` directory
-	if (req.path.match(/\/modules/)) {
-		newPath = req.path.replace(/\/js\/modules/, 'node_modules/');
-	} else {
-		// Otherwise, route `/js/` to `lib`
-		newPath = req.path.replace(/\/js/, 'lib/');		
-	}
-	// Send the static data
-	var data = fs.readFileSync(path.resolve(__dirname, newPath));
-	res.send(data);
-});
+// Route our static file requests to the proper places:
+app.use('/js/modules', express.static('node_modules'));
+app.use('/js', express.static('lib'));
+app.use('/', express.static('templates'));
 
 // Start the server
 var server = app.listen(1851, function(){

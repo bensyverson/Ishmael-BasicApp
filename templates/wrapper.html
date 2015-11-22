@@ -4,20 +4,19 @@
 		<title>BasicApp</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	    <link rel="stylesheet" href="index.css" type="text/css" charset="utf-8">
 
-<script type="text/javascript">
-if (typeof(require) === typeof(undefined)) window.require = function(){return null;};
-if (typeof(module) === typeof(undefined)) window.module = {};
-var print = print || function(e) { console.log(e) };
-</script>
-
+<!-- Because we're loading JS the old fashioned way, we need to be a little careful to load files in the right order. First comes the `putstuffhere` dependency.  -->
 <script type="text/javascript" src="js/modules/putstuffhere/lib/ajax.js"></script>
 <script type="text/javascript" src="js/modules/putstuffhere/lib/queue.js"></script>
 <script type="text/javascript" src="js/modules/putstuffhere/lib/putstuffhere.js"></script>
 <script type="text/javascript" src="js/modules/putstuffhere/index.js"></script>
 
+<!-- Next we load Ishmael, starting with the basics, then gradually adding more complex modules.  -->
 <script type="text/javascript" src="js/modules/ishmael/lib/autoincrement.js"></script>
 <script type="text/javascript" src="js/modules/ishmael/lib/userdefaults.js"></script>
+<script type="text/javascript" src="js/modules/ishmael/lib/printerror.js"></script>
+<script type="text/javascript" src="js/modules/ishmael/lib/printwarning.js"></script>
 
 <script type="text/javascript" src="js/modules/ishmael/lib/ishmael.js"></script>
 <script type="text/javascript" src="js/modules/ishmael/lib/uicolor.js"></script>
@@ -28,12 +27,17 @@ var print = print || function(e) { console.log(e) };
 <script type="text/javascript" src="js/modules/ishmael/lib/uibutton.js"></script>
 <script type="text/javascript" src="js/modules/ishmael/lib/domutils.js"></script>
 <script type="text/javascript" src="js/modules/ishmael/lib/dom.js"></script>
-<script type="text/javascript" src="js/modules/ishmael/lib/printerror.js"></script>
-<script type="text/javascript" src="js/modules/ishmael/lib/printwarning.js"></script>
-
 <script type="text/javascript" src="js/modules/ishmael/lib/viewcontroller.js"></script>
 <script type="text/javascript" src="js/modules/ishmael/lib/app.js"></script>
 
+<!-- Here we define `require` and `module` for the browser, so we don't have to do this in all of our source files. -->
+<script type="text/javascript">
+if (typeof(require) === typeof(undefined)) window.require = function(){return null;};
+if (typeof(module) === typeof(undefined)) window.module = {};
+var print = print || function(e) { console.log(e) };
+</script>
+
+<!-- Finally, load our app, starting with our simplest views and working backward to the main app class. -->
 <script type="text/javascript" src="js/storyview.js"></script>
 <script type="text/javascript" src="js/storylistview.js"></script>
 <script type="text/javascript" src="js/basicapp.js"></script>
@@ -41,54 +45,8 @@ var print = print || function(e) { console.log(e) };
 	</head>
 
 	<body>
-		
+<!-- Here's where the app's HTML will go: -->
 put html here
 
-	<style type="text/css">
-	html,body {
-		font-family: 'Helvetica', sans-serif;
-		background: #eee;
-		color: #666;
-	}
-
-	body { 
-		margin-top: 50px;
-	}
-
-	h2 {
-		font-weight: 100;
-		font-size: 200%;
-		margin: 0;
-		color: #ccc;
-		border-bottom: 1px solid #ccc;
-	}
-
-	p {
-		margin-top: 0.5em;
-	}
-
-	.list {
-		padding: 0;
-		width: 26em;
-		margin: 0 auto;
-	}
-
-	.story {
-		background: #fff;
-		padding: 10px 20px;
-		border-radius: 8px;
-		box-shadow: 0px 8px 8px rgba(0,0,0,0.05);
-		margin: 20px 0;
-	}
-
-	.story .button {
-		opacity: 0.0;
-	}
-
-	.story:hover .button {
-		opacity: 1.0;
-	}
-
-	</style>
 	</body>
 </html>
