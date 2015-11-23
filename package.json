@@ -24,6 +24,6 @@
   "dependencies": {
     "express": "^4.13.3",
     "ishmael": "^0.5.1",
-    "putstuffhere": "^0.9.3"
+    "putstuffhere": "^0.9.5",
   }
 }

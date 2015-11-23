@@ -29,43 +29,65 @@ if (PutStuffHere.shared()) {
 	PutStuffHere.shared().setTemplateRoot(__dirname + '/templates/');
 }
 
+// Route our static file requests to the proper places:
+app.use('/js/modules', express.static('node_modules'));
+app.use('/js', express.static('lib'));
+app.use('/css', express.static('templates/css'));
+
+
 // For simplicity's sake, we'll only set up a single rout for the app, under `/app`.
-app.get('/app', function(req,res){
+app.get('/', function(req,res){
 	// Instantiate the app,
 	var appInstance = new BasicApp(); 
 	// and load the main view.
-	appInstance.rootViewController().loadView(function(){ 
-		// Here we have the opportunity to do more before alerting the view controller that it's fully loaded. For now, we'll just call `viewDidLoad`.
-		appInstance.rootViewController().viewDidLoad();
+	loadPlaylist(function(err, aPlaylist){
+		if (aPlaylist) appInstance.rootViewController().view.stories = aPlaylist;
 
-		// At this point, the app and its views are loaded. We could simply send the HTML, but we're going to use `packAndShipFromPath` to put the entire app state on ice.
-		appInstance.packAndShipFromPath('/', function(err, html){
-			if (err) {
-				res.status(500).send("Whoops!");
-				return;
-			}
+		appInstance.rootViewController().loadView(function(){ 
+			// Here we have the opportunity to do more before alerting the view controller that it's fully loaded. For now, we'll just call `viewDidLoad`.
+			appInstance.rootViewController().viewDidLoad();
 
-			// Now we have the HTML of the app, along with the reviver shim, but it still needs to be sent within an html and body tag, etc.
-			var data = fs.readFileSync(path.resolve(__dirname, 'templates/wrapper.html'));
-			var template = data.toString('utf8');
+			// At this point, the app and its views are loaded. We could simply send the HTML, but we're going to use `packAndShipFromPath` to put the entire app state on ice.
+			appInstance.packAndShipFromPath('/', function(err, html){
+				if (err) return res.status(500).send("Whoops!");
 
-			// Our template contains the phrase "put html here"—we'll replace that with our HTML.
-			template = template.replace(/put html here/, html);
+				// Now we have the HTML of the app, along with the reviver shim, but it still needs to be sent within an html and body tag, etc.
+				var data = fs.readFileSync(path.resolve(__dirname, 'templates/wrapper.html'));
+				var template = data.toString('utf8');
 
-			// Send the whole thing!
-			res.send(template);
+				// Our template contains the phrase "put html here"—we'll replace that with our HTML.
+				template = template.replace(/put html here/, html);
+
+				// Send the whole thing!
+				res.send(template);
+			});
 		});
 	});
 });
 
-// Route our static file requests to the proper places:
-app.use('/js/modules', express.static('node_modules'));
-app.use('/js', express.static('lib'));
-app.use('/', express.static('templates'));
-
 // Start the server
 var server = app.listen(1851, function(){
-	console.log("Visit http://localhost:1851/app/");
+	console.log("Visit http://localhost:1851/");
 });
+
+
+// Helper function to load BBC Radio 1's playlist
+var loadPlaylist = function(cb){
+	var stories = [];
+	PutStuffHere.shared().ajax.getViaStandardHTTP('http://bbc.co.uk/radio1/playlist.json', function(err, body){
+		if (!err && body) {
+			var aList = JSON.parse(body);
+			if (aList && aList.playlist && aList.playlist.a) {
+				stories = aList.playlist.a.map(function(song){
+					return {
+						headline: song.artist,
+						lede: song.title,
+					}
+				});
+			} 
+		}
+		if (typeof(cb) === typeof(function(){})) cb(err, stories);
+	});
+};
 
 // For more, see the documentation for [basicapp.js](basicapp.html), [storylistview.js](storylistview.html) and [storyview.js](storyview.html)
