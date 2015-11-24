@@ -26,13 +26,14 @@ var BasicApp = require('./lib/basicapp.js');
 
 // Tell **PutStuffHere**, our template system, where to look for templates.
 if (PutStuffHere.shared()) { 
-	PutStuffHere.shared().setTemplateRoot(__dirname + '/templates/');
+	PutStuffHere.shared().setTemplateRoot(__dirname);
 }
 
 // Route our static file requests to the proper places:
 app.use('/js/modules', express.static('node_modules'));
 app.use('/js', express.static('lib'));
 app.use('/css', express.static('templates/css'));
+app.use('/templates', express.static('templates'));
 
 
 // For simplicity's sake, we'll only set up a single rout for the app, under `/app`.
