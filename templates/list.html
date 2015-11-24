@@ -10,7 +10,7 @@
 	<body>
 		<div class="list" data-ish-class="StoryListView" id="list">
 			<div class="story" data-ish-class="StoryView" data-ish-name="story">
-				<span class="button" data-ish-class="UIButton" data-ish-name="closeButton"> Close </span>
+				<span class="button" data-ish-class="UIButton" data-ish-name="closeButton" data-ish-event="TouchUpInside" data-ish-target="story" data-ish-action="close"> Close it! </span>
 				<header>
 					<h2>Put headline here</h2>
 				</header>
@@ -19,8 +19,8 @@
 				</p>
 			</div>
 
-			<div class="story" data-ish-class="StoryView" data-ish-name="story-placeholder" data-ish-display="placeholder">
-				<span class="button" data-ish-class="UIButton" data-ish-name="closeButton"> Close </span>
+			<div class="story" data-ish-display="placeholder">
+				<span class="button"> Close </span>
 				<header>
 					<h2>Yahoo to Enter Fantasy Sports Market</h2>
 				</header>

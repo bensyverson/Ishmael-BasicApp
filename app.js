@@ -37,10 +37,11 @@ app.use('/css', express.static('templates/css'));
 
 // For simplicity's sake, we'll only set up a single rout for the app, under `/app`.
 app.get('/', function(req,res){
-	// Instantiate the app,
+	// Instantiate the app:
 	var appInstance = new BasicApp(); 
-	// and load the main view.
+	// Load our app data.
 	loadPlaylist(function(err, aPlaylist){
+		// Set the data in our view.
 		if (aPlaylist) appInstance.rootViewController().view.stories = aPlaylist;
 
 		appInstance.rootViewController().loadView(function(){ 
