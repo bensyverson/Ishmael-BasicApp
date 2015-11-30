@@ -41,7 +41,7 @@ app.get('/', function(req,res){
 	// Instantiate the app:
 	var appInstance = new BasicApp(); 
 	// Load our app data.
-	loadPlaylist(function(err, aPlaylist){
+	loadData(function(err, aPlaylist){
 		// Set the data in our view.
 		if (aPlaylist) appInstance.rootViewController().view.stories = aPlaylist;
 
@@ -53,7 +53,7 @@ app.get('/', function(req,res){
 			appInstance.packAndShipFromPath('/', function(err, html){
 				if (err) return res.status(500).send("Whoops!");
 
-				// Now we have the HTML of the app, along with the reviver shim, but it still needs to be sent within an html and body tag, etc.
+				// Now we have the HTML of the app, along with the reviver shim, but it still needs to be sent within an html and body tag, etc. Often this is handled by a framework, but we're using bare Express.
 				var data = fs.readFileSync(path.resolve(__dirname, 'templates/wrapper.html'));
 				var template = data.toString('utf8');
 
@@ -73,17 +73,22 @@ var server = app.listen(1851, function(){
 });
 
 
-// Helper function to load BBC Radio 1's playlist
-var loadPlaylist = function(cb){
+// Helper function to load recent Flickr photos
+var loadData = function(cb){
 	var stories = [];
-	PutStuffHere.shared().ajax.getViaStandardHTTP('http://bbc.co.uk/radio1/playlist.json', function(err, body){
+	PutStuffHere.shared().ajax.getViaStandardHTTP('http://api.flickr.com/services/feeds/photos_public.gne?tags=travelwide&tagmode=all&format=json&nojsoncallback=1', function(err, body){
 		if (!err && body) {
-			var aList = JSON.parse(body);
-			if (aList && aList.playlist && aList.playlist.a) {
-				stories = aList.playlist.a.map(function(song){
+			var str = body.replace(/\\'/g, '\'');
+			var aList = JSON.parse(str);
+			if (aList && aList.items) {
+				stories = aList.items.map(function(photo){
+					var mediaUrl = photo.media ? photo.media.m : null;
+					// Do a little Flickr URL manipulation to get a bigger image:
+					if (mediaUrl) mediaUrl = mediaUrl.replace(/_m.jpg$/, '_c.jpg');
 					return {
-						headline: song.artist,
-						lede: song.title,
+						headline: photo.title,
+						imageLink: photo.link,
+						imageUrl: mediaUrl,
 					}
 				});
 			} 
@@ -92,4 +97,4 @@ var loadPlaylist = function(cb){
 	});
 };
 
-// For more, see the documentation for [basicapp.js](basicapp.html), [storylistview.js](storylistview.html) and [storyview.js](storyview.html)
+// For more, see the documentation for [basicapp.js](basicapp.html) and [storylistview.js](storylistview.html)

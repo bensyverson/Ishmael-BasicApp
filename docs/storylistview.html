@@ -29,11 +29,6 @@
                   storylistview.js
                 </a>
               
-                
-                <a class="source" href="storyview.html">
-                  storyview.js
-                </a>
-              
             </div>
           </div>
         </li>
@@ -74,7 +69,10 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> Ishmael = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ishmael'</span>);
-<span class="hljs-keyword">var</span> View = View || Ishmael.View;</pre></div></div>
+<span class="hljs-keyword">var</span> View = View || Ishmael.View;
+<span class="hljs-keyword">var</span> PutStuffHere = PutStuffHere || <span class="hljs-built_in">require</span>(<span class="hljs-string">'putstuffhere'</span>);
+
+<span class="hljs-keyword">var</span> StoryListView = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">templateName, aName, cb</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -85,13 +83,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>First-party</p>
+              <p>We’ll subclass <code>View</code>, and use the <code>#list</code> element of <code>list.html</code> as our template.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> StoryView = StoryView || <span class="hljs-built_in">require</span>(<span class="hljs-string">'./storyview.js'</span>);
-
-<span class="hljs-keyword">var</span> StoryListView = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(templateName, aName, cb)</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>	View.call(<span class="hljs-keyword">this</span>, <span class="hljs-string">'templates/list.html#list'</span>, aName, cb);</pre></div></div>
             
         </li>
         
@@ -102,11 +98,22 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>We’ll subclass <code>View</code>, and use the <code>#list</code> element of <code>list.html</code> as our template.</p>
+              <p>Add a simple instance variable to hold our headlines.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	View.call(<span class="hljs-keyword">this</span>, <span class="hljs-string">'list.html#list'</span>, aName, cb);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>
+	<span class="hljs-keyword">this</span>.stories = [];
+	<span class="hljs-keyword">this</span>.registerClass(<span class="hljs-string">'StoryListView'</span>);
+};
+StoryListView.prototype = <span class="hljs-built_in">Object</span>.create(View.prototype);
+StoryListView.prototype.constructor = StoryListView;
+
+
+StoryListView.prototype.createSubviews = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+	<span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+	
+	self.randomView = <span class="hljs-literal">null</span>;</pre></div></div>
             
         </li>
         
@@ -117,29 +124,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Add a simple instance variable to hold our headlines.</p>
+              <p>This method is in charge of creating any necessary subviews based on the view’s state. You can be clever here and reuse existing views, but for now, we’ll just wipe them out…</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">this</span>.stories = [
-		{
-			headline: <span class="hljs-string">"Headline!"</span>,
-			lede: <span class="hljs-string">"Lede!"</span>,
-		},
-		{
-			headline: <span class="hljs-string">"Headline2!"</span>,
-			lede: <span class="hljs-string">"Lede2!"</span>,
-		},
-	];
-	<span class="hljs-keyword">this</span>.registerClass(<span class="hljs-string">'StoryListView'</span>);
-};
-
-
-StoryListView.prototype = <span class="hljs-built_in">Object</span>.create(View.prototype);
-StoryListView.prototype.constructor = StoryListView;
-
-StoryListView.prototype.createSubviews = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-	<span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>	self.removeAllSubviews();</pre></div></div>
             
         </li>
         
@@ -150,15 +139,39 @@ StoryListView.prototype.createSubviews = <span class="hljs-function"><span class
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>This method is in charge of creating subviews based on the view’s state. You can be clever here and reuse existing subviews, but for now, we’ll just wipe out the existing views and recreate them.</p>
+              <p>…and recreate them.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	self.removeAllSubviews();
-	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; self.stories.length; i++) {
-		<span class="hljs-keyword">var</span> aView = <span class="hljs-keyword">new</span> StoryView();
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; self.stories.length; i++) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>We’re going to create a new view based on the <code>#story</code> element in <code>list.html</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">var</span> aView = <span class="hljs-keyword">new</span> View(<span class="hljs-string">'templates/list.html#story'</span>);
 		aView.locals = self.stories[i];
 		self.addSubview(aView);
+	}
+};
+
+StoryListView.prototype.close = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">aControl, aControlEvent</span>) </span>{
+	<span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+	<span class="hljs-keyword">var</span> storyView = aControl.superview;
+
+	<span class="hljs-keyword">var</span> storyIndex = self.subviews.indexOf(storyView);
+	<span class="hljs-keyword">if</span> (storyIndex &gt; -<span class="hljs-number">1</span>) {
+		self.stories.splice(storyIndex, <span class="hljs-number">1</span>);
+		storyView.removeFromSuperview();
 	}
 };
 

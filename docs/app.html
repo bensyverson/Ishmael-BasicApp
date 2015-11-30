@@ -83,7 +83,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> (PutStuffHere.shared()) { 
-	PutStuffHere.shared().setTemplateRoot(__dirname + <span class="hljs-string">'/templates/'</span>);
+	PutStuffHere.shared().setTemplateRoot(__dirname);
 }</pre></div></div>
             
         </li>
@@ -95,11 +95,14 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>For simplicity’s sake, we’ll only set up a single rout for the app, under <code>/app</code>.</p>
+              <p>Route our static file requests to the proper places:</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>app.get(<span class="hljs-string">'/app'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>app.use(<span class="hljs-string">'/js/modules'</span>, express.static(<span class="hljs-string">'node_modules'</span>));
+app.use(<span class="hljs-string">'/js'</span>, express.static(<span class="hljs-string">'lib'</span>));
+app.use(<span class="hljs-string">'/css'</span>, express.static(<span class="hljs-string">'templates/css'</span>));
+app.use(<span class="hljs-string">'/templates'</span>, express.static(<span class="hljs-string">'templates'</span>));</pre></div></div>
             
         </li>
         
@@ -110,11 +113,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Instantiate the app,</p>
+              <p>For simplicity’s sake, we’ll only set up a single rout for the app, under <code>/app</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> appInstance = <span class="hljs-keyword">new</span> BasicApp();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{</pre></div></div>
             
         </li>
         
@@ -125,11 +128,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>and load the main view.</p>
+              <p>Instantiate the app:</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	appInstance.rootViewController().loadView(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> appInstance = <span class="hljs-keyword">new</span> BasicApp();</pre></div></div>
             
         </li>
         
@@ -140,11 +143,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Here we have the opportunity to do more before alerting the view controller that it’s fully loaded. For now, we’ll just call <code>viewDidLoad</code>.</p>
+              <p>Load our app data.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		appInstance.rootViewController().viewDidLoad();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>	loadData(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, aPlaylist</span>)</span>{</pre></div></div>
             
         </li>
         
@@ -155,15 +158,13 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>At this point, the app and its views are loaded. We could simply send the HTML, but we’re going to use <code>packAndShipFromPath</code> to put the entire app state on ice.</p>
+              <p>Set the data in our view.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		appInstance.packAndShipFromPath(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, html</span>)</span>{
-			<span class="hljs-keyword">if</span> (err) {
-				res.status(<span class="hljs-number">500</span>).send(<span class="hljs-string">"Whoops!"</span>);
-				<span class="hljs-keyword">return</span>;
-			}</pre></div></div>
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> (aPlaylist) appInstance.rootViewController().view.stories = aPlaylist;
+
+		appInstance.rootViewController().loadView(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{</pre></div></div>
             
         </li>
         
@@ -174,12 +175,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>Now we have the HTML of the app, along with the reviver shim, but it still needs to be sent within an html and body tag, etc.</p>
+              <p>Here we have the opportunity to do more before alerting the view controller that it’s fully loaded. For now, we’ll just call <code>viewDidLoad</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">var</span> data = fs.readFileSync(path.resolve(__dirname, <span class="hljs-string">'templates/wrapper.html'</span>));
-			<span class="hljs-keyword">var</span> template = data.toString(<span class="hljs-string">'utf8'</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>			appInstance.rootViewController().viewDidLoad();</pre></div></div>
             
         </li>
         
@@ -190,11 +190,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>Our template contains the phrase “put html here”—we’ll replace that with our HTML.</p>
+              <p>At this point, the app and its views are loaded. We could simply send the HTML, but we’re going to use <code>packAndShipFromPath</code> to put the entire app state on ice.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			template = template.replace(<span class="hljs-regexp">/put html here/</span>, html);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>			appInstance.packAndShipFromPath(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, html</span>)</span>{
+				<span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">500</span>).send(<span class="hljs-string">"Whoops!"</span>);</pre></div></div>
             
         </li>
         
@@ -205,14 +206,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Send the whole thing!</p>
+              <p>Now we have the HTML of the app, along with the reviver shim, but it still needs to be sent within an html and body tag, etc. Often this is handled by a framework, but we’re using bare Express.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			res.send(template);
-		});
-	});
-});</pre></div></div>
+            <div class="content"><div class='highlight'><pre>				<span class="hljs-keyword">var</span> data = fs.readFileSync(path.resolve(__dirname, <span class="hljs-string">'templates/wrapper.html'</span>));
+				<span class="hljs-keyword">var</span> template = data.toString(<span class="hljs-string">'utf8'</span>);</pre></div></div>
             
         </li>
         
@@ -223,13 +222,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Route our static file requests to the proper places:</p>
+              <p>Our template contains the phrase “put html here”—we’ll replace that with our HTML.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>app.use(<span class="hljs-string">'/js/modules'</span>, express.static(<span class="hljs-string">'node_modules'</span>));
-app.use(<span class="hljs-string">'/js'</span>, express.static(<span class="hljs-string">'lib'</span>));
-app.use(<span class="hljs-string">'/'</span>, express.static(<span class="hljs-string">'templates'</span>));</pre></div></div>
+            <div class="content"><div class='highlight'><pre>				template = template.replace(<span class="hljs-regexp">/put html here/</span>, html);</pre></div></div>
             
         </li>
         
@@ -240,12 +237,14 @@ app.use(<span class="hljs-string">'/'</span>, express.static(<span class="hljs-s
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>Start the server</p>
+              <p>Send the whole thing!</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> server = app.listen(<span class="hljs-number">1851</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-	<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Visit http://localhost:1851/app/"</span>);
+            <div class="content"><div class='highlight'><pre>				res.send(template);
+			});
+		});
+	});
 });</pre></div></div>
             
         </li>
@@ -257,7 +256,73 @@ app.use(<span class="hljs-string">'/'</span>, express.static(<span class="hljs-s
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>For more, see the documentation for <a href="basicapp.html">basicapp.js</a>, <a href="storylistview.html">storylistview.js</a> and <a href="storyview.html">storyview.js</a></p>
+              <p>Start the server</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> server = app.listen(<span class="hljs-number">1851</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+	<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Visit http://localhost:1851/"</span>);
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Helper function to load recent Flickr photos</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> loadData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">cb</span>)</span>{
+	<span class="hljs-keyword">var</span> stories = [];
+	PutStuffHere.shared().ajax.getViaStandardHTTP(<span class="hljs-string">'http://api.flickr.com/services/feeds/photos_public.gne?tags=travelwide&amp;tagmode=all&amp;format=json&amp;nojsoncallback=1'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, body</span>)</span>{
+		<span class="hljs-keyword">if</span> (!err &amp;&amp; body) {
+			<span class="hljs-keyword">var</span> str = body.replace(<span class="hljs-regexp">/\\'/g</span>, <span class="hljs-string">'\''</span>);
+			<span class="hljs-keyword">var</span> aList = <span class="hljs-built_in">JSON</span>.parse(str);
+			<span class="hljs-keyword">if</span> (aList &amp;&amp; aList.items) {
+				stories = aList.items.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">photo</span>)</span>{
+					<span class="hljs-keyword">var</span> mediaUrl = photo.media ? photo.media.m : <span class="hljs-literal">null</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Do a little Flickr URL manipulation to get a bigger image:</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>					<span class="hljs-keyword">if</span> (mediaUrl) mediaUrl = mediaUrl.replace(<span class="hljs-regexp">/_m.jpg$/</span>, <span class="hljs-string">'_c.jpg'</span>);
+					<span class="hljs-keyword">return</span> {
+						headline: photo.title,
+						imageLink: photo.link,
+						imageUrl: mediaUrl,
+					}
+				});
+			} 
+		}
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(cb) === <span class="hljs-keyword">typeof</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{})) cb(err, stories);
+	});
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>For more, see the documentation for <a href="basicapp.html">basicapp.js</a> and <a href="storylistview.html">storylistview.js</a></p>
 
             </div>
             
